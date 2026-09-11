@@ -1,0 +1,1767 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Workbalance – TRATON</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f5f7 url("PMO_mission.png") center/cover fixed no-repeat;
+      margin: 0;
+      padding: 20px;
+      color: #12213b;
+    }
+    .page-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+      padding: 20px 24px 24px 24px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .logo-wrapper img { height: 40px; width: auto; }
+    .header-text { display: flex; flex-direction: column; text-align: left; }
+    h1 { margin: 0; font-size: 28px; letter-spacing: 0.5px; }
+    .traton-label {
+      margin-top: 2px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .intro-block {
+      margin: 8px 0 6px 0;
+      max-width: 900px;
+      font-size: 14px;
+    }
+    .intro-text { margin-bottom: 4px; }
+    .helper-link {
+      font-size: 13px;
+      color: #1a73e8;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* CIRCLE + AREA CARDS */
+    .circle-layout { display: flex; justify-content: center; margin-top: 10px; margin-bottom: 10px; }
+    .circle-layout-inner { position: relative; max-width: 920px; width: 100%; min-height: 460px; margin: 0 auto; }
+
+    .circle-wrapper {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: inline-block;
+    }
+
+    .circle-wrapper img {
+      max-width: 640px; /* bigger circle */
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+      display: block;
+    }
+
+    .area-overlay-box {
+      position: absolute;
+      background: rgba(255,255,255,0.9);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 16px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      min-width: 88px;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
+    }
+    .overlay-icons span { margin: 0 1px; }
+
+    /* overlay positions */
+    #overlay-Manageability { top: 13%; left: 12%; }
+    #overlay-Comprehensibility { top: 13%; right: 12%; }
+    #overlay-Meaningfulness { bottom: 11%; left: 12%; }
+    #overlay-Recovery { bottom: 11%; right: 12%; }
+
+    .area-card {
+      position: absolute;
+      width: 205px;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 6px 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 11px;
+    }
+    .area-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .area-title { font-weight: bold; font-size: 12px; }
+    .info-link { font-size: 10px; text-decoration: underline; color: #1a73e8; cursor: pointer; }
+
+    .buttons-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 2px; }
+    .color-btn {
+      border: none;
+      padding: 3px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 10px;
+      color: #fff;
+      min-width: 52px;
+    }
+    .blue  { background: #2b6cb0; }
+    .green { background: #38a169; }
+    .yellow{ background: #ecc94b; color: #000; }
+    .red   { background: #e53e3e; }
+
+    .counts { display: none; }
+
+    /* cards around circle */
+    #card-Manageability { top: -8px; left: -4%; }
+    #card-Comprehensibility { top: -8px; right: -4%; }
+    #card-Meaningfulness { bottom: 52px; left: -4%; }
+    #card-Recovery { bottom: 52px; right: -4%; }
+
+    /* Workload overlay on right side (not covering circle) */
+    .workload-avg-box {
+      position: absolute;
+      top: 50%;
+      right: -9%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.92);
+      border-radius: 10px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      text-align: center;
+      font-size: 10px;
+      width: 86px;
+    }
+    .workload-label { font-weight: bold; margin-bottom: 2px; }
+    .workload-bar-outer {
+      height: 96px;
+      width: 16px;
+      margin: 0 auto;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: linear-gradient(to top, #f44336, #ffeb3b, #4caf50);
+      position: relative;
+      overflow: hidden;
+    }
+    .workload-bar-inner {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(18,33,59,0.9);
+      border-radius: 8px 8px 0 0;
+      height: 0%;
+      transition: height 0.3s ease-out;
+    }
+    .workload-value { margin-top: 4px; font-size: 11px; }
+
+    /* Team member view */
+    .members-toggle { margin-top: 12px; font-size: 14px; }
+
+    .global-import-controls {
+      margin-top: 8px;
+      font-size: 11px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .global-import-controls button {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #1a73e8;
+      color: #ffffff;
+    }
+    .global-import-controls .hint { color: #555; }
+
+    .members-section {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .members-section h2 { margin-top: 0; font-size: 16px; }
+    .members-section p { font-size: 12px; margin-top: 4px; }
+    .workload-desc { font-size: 11px; margin-top: 4px; color: #333; }
+    .member-help-link { font-size: 11px; color: #1a73e8; text-decoration: underline; cursor: pointer; }
+
+    .members-table-container { max-height: 220px; overflow-y: auto; margin-top: 6px; }
+    table.members-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    table.members-table th, table.members-table td {
+      border: 1px solid #ccc;
+      padding: 2px 4px;
+      text-align: center;
+      line-height: 1.2;
+    }
+    table.members-table th {
+      background: #12213b;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      font-size: 11px;
+      padding: 3px 4px;
+    }
+    .remove-btn {
+      border: none;
+      background: #e53e3e;
+      color: #fff;
+      border-radius: 3px;
+      padding: 1px 4px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+    .prev-week-cell { font-size: 10px; line-height: 1.2; white-space: nowrap; }
+    .prev-week-chip { display: inline-block; margin-right: 10px; }
+
+    .member-controls {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .member-controls input { padding: 5px 6px; font-size: 12px; }
+    .member-controls button {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #12213b;
+      color: #ffffff;
+    }
+
+    /* History circles at bottom */
+    .history-circles {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+    .history-circle-block { text-align: center; font-size: 11px; }
+    .history-circle-week { font-weight: bold; margin-bottom: 4px; }
+    .history-circle-wrapper { position: relative; display: inline-block; max-width: 220px; }
+    .history-circle-img {
+      width: 100%;
+      max-width: 220px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .history-overlay {
+      position: absolute;
+      background: rgba(255,255,255,0.9);
+      border-radius: 8px;
+      padding: 2px 4px;
+      font-size: 13px;
+      min-width: 50px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .history-overlay span { margin: 0 1px; }
+    .history-overlay-manage { top: 15%; left: 10%; }
+    .history-overlay-comp   { top: 15%; right: 10%; }
+    .history-overlay-mean   { bottom: 13%; left: 10%; }
+    .history-overlay-recov  { bottom: 13%; right: 10%; }
+
+    /* Bottom – Week + Team + Export (export at bottom) */
+    .bottom-meta {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .meta-fields { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .meta-group { display: flex; flex-direction: column; gap: 2px; }
+    .meta-fields label { font-size: 12px; }
+    .meta-fields input, .meta-fields select { padding: 4px 6px; font-size: 12px; min-width: 80px; }
+    .export-container button {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #12213b;
+      color: #ffffff;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: #ffffff;
+      max-width: 700px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .modal h3 { margin-top: 0; }
+    .modal section { margin-bottom: 10px; }
+    .modal-close { float: right; cursor: pointer; font-weight: bold; font-size: 18px; }
+
+    /* Week picker modal */
+    .week-picker-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .week-picker-controls select {
+      padding: 7px 10px;
+      font-size: 14px;
+    }
+    .week-picker-controls button {
+      padding: 7px 12px;
+      font-size: 13px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #12213b;
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      body { padding: 8px; }
+      .page-shell { padding: 14px; }
+      header { flex-direction: column; align-items: flex-start; }
+      .logo-wrapper img { height: 32px; }
+      .circle-layout-inner { min-height: auto; }
+      .area-card { position: static; width: 100%; margin-top: 8px; }
+      .circle-wrapper { position: static; transform: none; display: flex; justify-content: center; margin-bottom: 10px; }
+      .area-overlay-box { display: none; }
+      .workload-avg-box { position: static; margin: 6px auto 0 auto; transform: none; }
+      .bottom-meta { flex-direction: column; align-items: flex-start; }
+      .members-table-container { max-height: 260px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header>
+      <div class="logo-wrapper">
+        <img src="Traton_logo.png" alt="TRATON Group logo">
+      </div>
+      <div class="header-text">
+        <h1>Workbalance</h1>
+        <div class="traton-label">TRATON GROUP – WORK BALANCE DIALOGUE</div>
+      </div>
+    </header>
+
+    <div class="intro-block">
+      <div class="intro-text">
+        Workbalance is a support for dialogue in the team about how sustainable the work situation is.
+        You rate four areas together – Manageability, Comprehensibility, Meaningfulness and Recovery –
+        using the colours blue, green, yellow and red.
+      </div>
+      <span class="helper-link" onclick="openUsageInfo()">How do we use this page?</span>
+    </div>
+
+    <!-- CIRCLE + AREA CARDS -->
+    <div class="circle-layout">
+      <div class="circle-layout-inner">
+        <div class="circle-wrapper">
+          <img src="workbalance_circle.png" alt="Work Balance Model">
+
+          <!-- overlays -->
+          <div class="area-overlay-box" id="overlay-Manageability"><div class="overlay-icons"></div></div>
+          <div class="area-overlay-box" id="overlay-Comprehensibility"><div class="overlay-icons"></div></div>
+          <div class="area-overlay-box" id="overlay-Meaningfulness"><div class="overlay-icons"></div></div>
+          <div class="area-overlay-box" id="overlay-Recovery"><div class="overlay-icons"></div></div>
+
+          <!-- workload -->
+          <div class="workload-avg-box" id="workloadAvgBox">
+            <div class="workload-label">Workload</div>
+            <div class="workload-bar-outer">
+              <div class="workload-bar-inner" id="workloadBarInner"></div>
+            </div>
+            <div class="workload-value" id="workloadAvgValue">–</div>
+          </div>
+        </div>
+
+        <!-- Area cards -->
+        <div class="area-card" id="card-Manageability">
+          <div class="area-title-row">
+            <div class="area-title">Manageability</div>
+            <span class="info-link" onclick="openAreaInfo('Manageability')">What does this mean?</span>
+          </div>
+          <div class="buttons-row">
+            <button class="color-btn blue"   type="button" onclick="increment('Manageability','blue')">Blue +1</button>
+            <button class="color-btn green"  type="button" onclick="increment('Manageability','green')">Green +1</button>
+            <button class="color-btn yellow" type="button" onclick="increment('Manageability','yellow')">Yellow +1</button>
+            <button class="color-btn red"    type="button" onclick="increment('Manageability','red')">Red +1</button>
+          </div>
+          <div class="counts" id="counts-Manageability"></div>
+        </div>
+
+        <div class="area-card" id="card-Comprehensibility">
+          <div class="area-title-row">
+            <div class="area-title">Comprehensibility</div>
+            <span class="info-link" onclick="openAreaInfo('Comprehensibility')">What does this mean?</span>
+          </div>
+          <div class="buttons-row">
+            <button class="color-btn blue"   type="button" onclick="increment('Comprehensibility','blue')">Blue +1</button>
+            <button class="color-btn green"  type="button" onclick="increment('Comprehensibility','green')">Green +1</button>
+            <button class="color-btn yellow" type="button" onclick="increment('Comprehensibility','yellow')">Yellow +1</button>
+            <button class="color-btn red"    type="button" onclick="increment('Comprehensibility','red')">Red +1</button>
+          </div>
+          <div class="counts" id="counts-Comprehensibility"></div>
+        </div>
+
+        <div class="area-card" id="card-Meaningfulness">
+          <div class="area-title-row">
+            <div class="area-title">Meaningfulness</div>
+            <span class="info-link" onclick="openAreaInfo('Meaningfulness')">What does this mean?</span>
+          </div>
+          <div class="buttons-row">
+            <button class="color-btn blue"   type="button" onclick="increment('Meaningfulness','blue')">Blue +1</button>
+            <button class="color-btn green"  type="button" onclick="increment('Meaningfulness','green')">Green +1</button>
+            <button class="color-btn yellow" type="button" onclick="increment('Meaningfulness','yellow')">Yellow +1</button>
+            <button class="color-btn red"    type="button" onclick="increment('Meaningfulness','red')">Red +1</button>
+          </div>
+          <div class="counts" id="counts-Meaningfulness"></div>
+        </div>
+
+        <div class="area-card" id="card-Recovery">
+          <div class="area-title-row">
+            <div class="area-title">Recovery</div>
+            <span class="info-link" onclick="openAreaInfo('Recovery')">What does this mean?</span>
+          </div>
+          <div class="buttons-row">
+            <button class="color-btn blue"   type="button" onclick="increment('Recovery','blue')">Blue +1</button>
+            <button class="color-btn green"  type="button" onclick="increment('Recovery','green')">Green +1</button>
+            <button class="color-btn yellow" type="button" onclick="increment('Recovery','yellow')">Yellow +1</button>
+            <button class="color-btn red"    type="button" onclick="increment('Recovery','red')">Red +1</button>
+          </div>
+          <div class="counts" id="counts-Recovery"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM MEMBER VIEW -->
+    <div class="members-section" id="membersSection">
+      <h2>Team member view (optional)</h2>
+      <p>
+        Import an Excel history file to load team name, all members and all weeks. You can choose which week to load.
+        If someone already filled in that week directly in Excel, those values will appear here.
+        <span class="member-help-link" onclick="openMemberFileInfo()">How does import / export work?</span>
+      </p>
+      <p class="workload-desc">
+        Each person can record <strong>perceived workload</strong> on a 4-step scale:
+        1 = “I need more to do”, 2 = “Quite full, but I can help a bit more”, 3 = “Balanced load”, 4 = “Fully loaded”.
+        The team average is shown on the circle as a vertical bar.
+      </p>
+
+      <div class="members-table-container">
+        <table class="members-table" id="membersTable">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Manageability</th>
+              <th>Comprehensibility</th>
+              <th>Meaningfulness</th>
+              <th>Recovery</th>
+              <th>Workload<br/>(1–4)</th>
+              <th>Recognition</th>
+              <th>Recent weeks<br/>(2 latest)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="member-controls">
+        <input type="text" id="memberNameInput" placeholder="Team member name" />
+        <button type="button" onclick="addMember()">Add member</button>
+      </div>
+    </div>
+
+    <!-- HISTORY CIRCLES (last 4 weeks) -->
+    <div id="historyCirclesContainer" class="history-circles"></div>
+
+    <!-- TEAM MEMBER TOGGLE -->
+    <div class="members-toggle">
+      <label>
+        <input type="checkbox" id="toggleMembers" onchange="toggleMembersSection()">
+        Add status per team member (optional – with weekly history)
+      </label>
+    </div>
+
+    <!-- GLOBAL IMPORT (always visible; auto-opens member view) -->
+    <div class="global-import-controls">
+      <button type="button" onclick="triggerGlobalImport()">Import from Excel (history file)</button>
+      <span class="hint">Import is always available. Team member view opens automatically.</span>
+      <input type="file" id="globalMemberFileInput" accept=".xlsx" style="display:none"
+             onchange="handleGlobalImportFile(this.files[0])">
+    </div>
+
+    <!-- BOTTOM: team + week + export -->
+    <div class="bottom-meta">
+      <div class="meta-fields">
+        <div class="meta-group">
+          <label for="teamInput">Team name</label>
+          <input id="teamInput" type="text" placeholder="e.g. XTRM Platform" />
+        </div>
+        <div class="meta-group">
+          <label>Year / Week (YYWW)</label>
+          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <div>
+              <span style="font-size:11px;">Year</span><br/>
+              <select id="yearSelect"></select>
+            </div>
+            <div>
+              <span style="font-size:11px;">Week</span><br/>
+              <select id="weekSelect"></select>
+            </div>
+            <div>
+              <span style="font-size:11px;">Code</span><br/>
+              <input id="weekCodeDisplay" type="text" readonly style="background:#f3f3f3;"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="export-container">
+        <button type="button" onclick="exportToExcelSaveAs()">Export to Excel (Save As)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- WEEK PICKER MODAL (on import) -->
+  <div class="modal-backdrop" id="weekPickerBackdrop">
+    <div class="modal">
+      <span class="modal-close" onclick="closeWeekPicker()">&times;</span>
+      <h3>Select which week to load from the imported Excel file</h3>
+      <section style="font-size:12px;color:#333;">
+        Default selection is the <strong>latest week that has any data filled</strong> in the Excel file.
+        You can select another week to view / edit that week.
+      </section>
+      <div class="week-picker-controls">
+        <label style="font-size:12px;">Week (YYWW)</label>
+        <select id="importWeekSelect"></select>
+        <button type="button" onclick="confirmWeekImport()">Load selected week</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Library for Excel export with styling -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+  <script>
+    const areas = ["Manageability","Comprehensibility","Meaningfulness","Recovery"];
+
+    const areaInfo = {
+      "Manageability": {
+        definition: "Manageability is about your overall conditions at work – the balance between demands and resources, support, clarity and the possibility to influence.",
+        questions: [
+          "Do you have sufficient time and resources to complete your duties?",
+          "Are the right demands being made of you?",
+          "Are you able to influence your work situation?",
+          "Can you raise and escalate issues – and do you get support when you do?",
+          "Do you know what is expected of you and are there working methods that make things easier?"
+        ]
+      },
+      "Comprehensibility": {
+        definition: "Comprehensibility is the feeling of understanding the organisation’s goals and how your work contributes. It requires openness and a clear overall picture.",
+        questions: [
+          "Do you understand what is going on in the organisation?",
+          "Do you feel coherence with the organisational goals?",
+          "If you have different roles, do they fit together?",
+          "Do you feel safe and treated with respect at work?",
+          "Do you receive continuous feedback that helps you progress?"
+        ]
+      },
+      "Meaningfulness": {
+        definition: "Meaningfulness is about being appreciated and included in a fair and stimulating social climate. A high sense of meaningfulness generates motivation and creativity.",
+        questions: [
+          "Do you feel fairly treated in relation to your colleagues?",
+          "Do you feel included in what is going on and encouraged to participate?",
+          "Do you receive sufficient acknowledgement and do you celebrate success?",
+          "Do you find your work tasks motivating?",
+          "Do you follow your personal development plan?"
+        ]
+      },
+      "Recovery": {
+        definition: "Recovery is about variation in work, the ability to use breaks for movement or rest, and having time for focus and reflection so that energy can be restored.",
+        questions: [
+          "Can you put work thoughts aside outside working hours?",
+          "Can you use breaks at work to relax and recover?",
+          "Are you able to move around during breaks?",
+          "Do you feel energised coming to work and have energy left when you go home?",
+          "Do you have time for reflection and conditions for focused work?"
+        ]
+      }
+    };
+
+    const usageInfo = {
+      title: "How to use this page",
+      html: `
+        <section><strong>1. Select team and week</strong><br/>Enter the team name and select the week (YYWW).</section>
+        <section><strong>2. Rate each area</strong><br/>Click the colour buttons for each area. The icons on the circle show how many blue, green, yellow and red you have per area.</section>
+        <section><strong>3. Team member view (optional)</strong><br/>Turn on “Add status per team member” to rate per person. The circle is calculated from members for the selected week.</section>
+        <section><strong>4. Excel import/export</strong><br/>
+          You can fill values directly in Excel (including future weeks). Import restores those values.
+          Export includes the selected week + the next <strong>3</strong> weeks, and shows the newest weeks on the left to minimize horizontal scrolling.
+        </section>
+      `
+    };
+
+    const memberFileInfo = {
+      title: "Import / export for Excel",
+      html: `
+        <section><strong>Meta</strong><br/>The Excel file contains a sheet called <em>Meta</em> where the team name is stored.</section>
+        <section><strong>Data</strong><br/>
+          The main sheet is <em>Data</em>: Member | Area | Week columns (YYWW). Type: <code>blue</code>, <code>green</code>, <code>yellow</code>, <code>red</code> (or leave empty).
+          The newest weeks are placed on the left in export.
+        </section>
+        <section><strong>Workload</strong><br/>Separate sheet with workload 1–4 per person and week.</section>
+        <section><strong>Recognition</strong><br/>Separate sheet with recognition emoji per person and week. Use ⭐, 🏅, ❤️ or leave empty.</section>
+        <section><strong>Save As</strong><br/>Browsers cannot silently overwrite files. Export uses a Save As dialog in Edge/Chrome when allowed.</section>
+      `
+    };
+
+    /* ---------- Modal helpers ---------- */
+    function openModal(html) {
+      document.getElementById("modalContent").innerHTML = html;
+      document.getElementById("modalBackdrop").style.display = "flex";
+    }
+    function closeModal() { document.getElementById("modalBackdrop").style.display = "none"; }
+    function openUsageInfo() { openModal(`<h3>${usageInfo.title}</h3>${usageInfo.html}`); }
+    function openMemberFileInfo() { openModal(`<h3>${memberFileInfo.title}</h3>${memberFileInfo.html}`); }
+
+    function openAreaInfo(area) {
+      const info = areaInfo[area];
+      if (!info) return;
+      const html = `
+        <h3>${area}</h3>
+        <section><strong>Definition:</strong><br/>${info.definition}</section>
+        <section><strong>Reflection questions:</strong>
+          <ul>${info.questions.map(q => `<li>${q}</li>`).join("")}</ul>
+        </section>
+        <section>
+          <strong>What to do with the colours:</strong><br/>
+          • 🔵🟢 – keep and spread what works.<br/>
+          • 🟡 – follow up and agree on improvements.<br/>
+          • 🔴 – urgent: understand causes, act and consider escalation.
+        </section>`;
+      openModal(html);
+    }
+
+    /* ---------- Circle data ---------- */
+    const areaData = {};
+    const overall = { blue:0, green:0, yellow:0, red:0 };
+
+    function initAreas() {
+      areas.forEach(a => areaData[a] = { blue:0, green:0, yellow:0, red:0 });
+      areas.forEach(updateAreaCounts);
+      updateOverlayAreas();
+      updateWorkloadOverlay();
+    }
+
+    function increment(area, colour) {
+      areaData[area][colour]++;
+      overall[colour]++;
+      updateAreaCounts(area);
+      updateOverlayAreas();
+    }
+
+    function updateAreaCounts(area) {
+      const el = document.getElementById("counts-" + area.replace(/\s/g,""));
+      if (!el) return;
+      const d = areaData[area];
+      el.innerHTML =
+        `<span><strong>B:</strong> ${d.blue}</span>` +
+        `<span><strong>G:</strong> ${d.green}</span>` +
+        `<span><strong>Y:</strong> ${d.yellow}</span>` +
+        `<span><strong>R:</strong> ${d.red}</span>`;
+    }
+
+    function makeStatusIcons(d) {
+      const total = (d.blue||0)+(d.green||0)+(d.yellow||0)+(d.red||0);
+      if (!total) return '<span style="font-size:11px;color:#666;">–</span>';
+
+      const tokens = [];
+      const addMany = (emoji, count) => { for (let i=0;i<count;i++) tokens.push(emoji); };
+      const maxIcons = 18;
+
+      const add = (emoji, count) => {
+        const free = maxIcons - tokens.length;
+        if (free <= 0) return;
+        addMany(emoji, Math.min(count, free));
+      };
+
+      add("🔵", d.blue||0);
+      add("🟢", d.green||0);
+      add("🟡", d.yellow||0);
+      add("🔴", d.red||0);
+
+      let html = "";
+      tokens.forEach((t,i) => {
+        if (i>0 && i%5===0) html += "<br>";
+        html += `<span>${t}</span>`;
+      });
+      const extra = total - tokens.length;
+      if (extra>0) html += `<span>+${extra}</span>`;
+      return html;
+    }
+
+    function updateOverlayAreas() {
+      areas.forEach(area => {
+        const overlay = document.getElementById("overlay-" + area);
+        if (!overlay) return;
+        overlay.querySelector(".overlay-icons").innerHTML = makeStatusIcons(areaData[area]);
+      });
+    }
+
+    function snapshotString(d) {
+      const parts = [];
+      if (d.blue>0) parts.push("🔵 x"+d.blue);
+      if (d.green>0) parts.push("🟢 x"+d.green);
+      if (d.yellow>0) parts.push("🟡 x"+d.yellow);
+      if (d.red>0) parts.push("🔴 x"+d.red);
+      return parts.join("  ");
+    }
+
+    /* ---------- Member view ---------- */
+    const members = [];
+    let historyRows = [];
+
+    function toggleMembersSection() {
+      const checked = document.getElementById("toggleMembers").checked;
+      document.getElementById("membersSection").style.display = checked ? "block" : "none";
+      if (checked) {
+        renderMembersTable();
+        recalcFromMembers();
+      }
+    }
+
+    function addMember() {
+      const nameInput = document.getElementById("memberNameInput");
+      const name = nameInput.value.trim();
+      if (!name) return;
+
+      if (members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+        alert("That member already exists.");
+        return;
+      }
+
+      members.push({ name, ratings: {}, workload: null, recognition: "" });
+      nameInput.value = "";
+      renderMembersTable();
+      recalcFromMembers();
+    }
+
+    function removeMember(index) {
+      members.splice(index, 1);
+      renderMembersTable();
+      recalcFromMembers();
+    }
+
+    function renderMembersTable() {
+      const tbody = document.querySelector("#membersTable tbody");
+      tbody.innerHTML = "";
+      const team = document.getElementById("teamInput").value.trim();
+
+      members.forEach((m, idx) => {
+        const tr = document.createElement("tr");
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = m.name;
+        tr.appendChild(nameTd);
+
+        areas.forEach(area => {
+          const td = document.createElement("td");
+          const sel = document.createElement("select");
+          sel.style.fontSize = "14px";
+          sel.style.textAlign = "center";
+
+          const options = [
+            { value:"", label:"" },
+            { value:"blue", label:"🔵" },
+            { value:"green", label:"🟢" },
+            { value:"yellow", label:"🟡" },
+            { value:"red", label:"🔴" }
+          ];
+
+          options.forEach(o => {
+            const opt = document.createElement("option");
+            opt.value = o.value;
+            opt.textContent = o.label;
+            if ((m.ratings[area] || "") === o.value) opt.selected = true;
+            sel.appendChild(opt);
+          });
+
+          sel.addEventListener("change", () => {
+            m.ratings[area] = sel.value;
+            recalcFromMembers();
+          });
+
+          td.appendChild(sel);
+          tr.appendChild(td);
+        });
+
+        const workloadTd = document.createElement("td");
+        const wlSelect = document.createElement("select");
+        wlSelect.style.fontSize = "11px";
+        const wlOptions = [
+          { value:"", label:"" },
+          { value:"1", label:"1" },
+          { value:"2", label:"2" },
+          { value:"3", label:"3" },
+          { value:"4", label:"4" }
+        ];
+        wlOptions.forEach(o => {
+          const opt = document.createElement("option");
+          opt.value = o.value;
+          opt.textContent = o.label;
+          if ((m.workload != null ? String(m.workload) : "") === o.value) opt.selected = true;
+          wlSelect.appendChild(opt);
+        });
+        wlSelect.addEventListener("change", () => {
+          const v = wlSelect.value;
+          m.workload = v ? parseInt(v,10) : null;
+          updateWorkloadOverlay();
+        });
+        workloadTd.appendChild(wlSelect);
+        tr.appendChild(workloadTd);
+
+        const recognitionTd = document.createElement("td");
+        const recognitionSelect = document.createElement("select");
+        recognitionSelect.style.fontSize = "16px";
+        const recognitionOptions = [
+          { value:"", label:"" },
+          { value:"⭐", label:"⭐" },
+          { value:"🏅", label:"🏅" },
+          { value:"❤️", label:"❤️" }
+        ];
+        recognitionOptions.forEach(o => {
+          const opt = document.createElement("option");
+          opt.value = o.value;
+          opt.textContent = o.label;
+          if ((m.recognition || "") === o.value) opt.selected = true;
+          recognitionSelect.appendChild(opt);
+        });
+        recognitionSelect.addEventListener("change", () => {
+          m.recognition = recognitionSelect.value;
+        });
+        recognitionTd.appendChild(recognitionSelect);
+        tr.appendChild(recognitionTd);
+
+        const prevTd = document.createElement("td");
+        prevTd.className = "prev-week-cell";
+        prevTd.innerHTML = buildRecentTwoWeeksStatus(m.name, team);
+        tr.appendChild(prevTd);
+
+        const removeTd = document.createElement("td");
+        const rm = document.createElement("button");
+        rm.className = "remove-btn";
+        rm.textContent = "X";
+        rm.title = "Remove member";
+        rm.onclick = () => removeMember(idx);
+        removeTd.appendChild(rm);
+        tr.appendChild(removeTd);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function recalcFromMembers() {
+      areas.forEach(a => areaData[a] = { blue:0, green:0, yellow:0, red:0 });
+      overall.blue = overall.green = overall.yellow = overall.red = 0;
+
+      members.forEach(m => {
+        areas.forEach(a => {
+          const c = (m.ratings[a] || "").toLowerCase();
+          if (c && areaData[a][c] !== undefined) {
+            areaData[a][c]++;
+            overall[c]++;
+          }
+        });
+      });
+
+      areas.forEach(updateAreaCounts);
+      updateOverlayAreas();
+      updateWorkloadOverlay();
+    }
+
+    function updateWorkloadOverlay() {
+      const bar = document.getElementById("workloadBarInner");
+      const valueEl = document.getElementById("workloadAvgValue");
+
+      let sum = 0;
+      let count = 0;
+      members.forEach(m => {
+        if (typeof m.workload === "number" && m.workload >= 1 && m.workload <= 4) {
+          sum += m.workload;
+          count++;
+        }
+      });
+
+      if (!count) {
+        bar.style.height = "0%";
+        valueEl.textContent = "–";
+        return;
+      }
+
+      const avg = sum / count;
+      const pct = Math.min(100, Math.max(0, (avg / 4) * 100));
+      bar.style.height = pct + "%";
+      valueEl.textContent = avg.toFixed(1) + " / 4";
+    }
+
+    /* ---------- Recent weeks chips & history circles ---------- */
+    function mapDot(c) {
+      c = (c || "").toLowerCase();
+      if (c === "blue") return "🔵";
+      if (c === "green") return "🟢";
+      if (c === "yellow") return "🟡";
+      if (c === "red") return "🔴";
+      return "⚪";
+    }
+
+    function buildRecentTwoWeeksStatus(name, team) {
+      if (!historyRows.length) return "";
+      const rows = historyRows
+        .filter(r => r.Member === name && r.Team === team && /^\d{4}$/.test(String(r.Week||"")))
+        .sort((a,b) => String(a.Week).localeCompare(String(b.Week)));
+
+      if (!rows.length) return "";
+
+      const seenWeeks = new Set();
+      const picked = [];
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const r = rows[i];
+        const w = String(r.Week || "");
+        if (!w) continue;
+        if (!seenWeeks.has(w)) {
+          seenWeeks.add(w);
+          picked.push(r);
+          if (picked.length === 2) break;
+        }
+      }
+      picked.reverse();
+
+      return picked.map(r => {
+        const w = String(r.Week || "");
+        const recognition = r.Recognition ? ` Rec:${r.Recognition}` : "";
+        return `
+          <span class="prev-week-chip">
+            <strong>${w}</strong>
+            M:${mapDot(r.Manageability)}
+            C:${mapDot(r.Comprehensibility)}
+            Me:${mapDot(r.Meaningfulness)}
+            R:${mapDot(r.Recovery)}${recognition}
+          </span>
+        `;
+      }).join("");
+    }
+
+    function renderHistoryCirclesForTeam(team) {
+      const container = document.getElementById("historyCirclesContainer");
+      container.innerHTML = "";
+      if (!team || !historyRows.length) return;
+
+      const rows = historyRows.filter(r => (r.Team || "") === team && /^\d{4}$/.test(String(r.Week||"")));
+      if (!rows.length) return;
+
+      const weekOrder = Array.from(new Set(rows.map(r => String(r.Week||"")))).sort();
+      const selectedWeeks = weekOrder.slice(-4);
+      if (!selectedWeeks.length) return;
+
+      const weekData = {};
+      selectedWeeks.forEach(w => {
+        weekData[w] = {};
+        areas.forEach(a => weekData[w][a] = { blue:0, green:0, yellow:0, red:0 });
+      });
+
+      rows.forEach(r => {
+        const w = String(r.Week || "");
+        if (!selectedWeeks.includes(w)) return;
+        areas.forEach(a => {
+          const c = String(r[a] || "").toLowerCase();
+          if (weekData[w][a][c] !== undefined) weekData[w][a][c]++;
+        });
+      });
+
+      const posClasses = ["history-overlay-manage","history-overlay-comp","history-overlay-mean","history-overlay-recov"];
+
+      selectedWeeks.forEach(w => {
+        const block = document.createElement("div");
+        block.className = "history-circle-block";
+
+        const label = document.createElement("div");
+        label.className = "history-circle-week";
+        label.textContent = "Week " + w;
+        block.appendChild(label);
+
+        const wrap = document.createElement("div");
+        wrap.className = "history-circle-wrapper";
+
+        const img = document.createElement("img");
+        img.src = "workbalance_circle.png";
+        img.alt = "Workbalance " + w;
+        img.className = "history-circle-img";
+        wrap.appendChild(img);
+
+        areas.forEach((a,i) => {
+          const ov = document.createElement("div");
+          ov.className = "history-overlay " + posClasses[i];
+          ov.innerHTML = makeStatusIcons(weekData[w][a]);
+          wrap.appendChild(ov);
+        });
+
+        block.appendChild(wrap);
+        container.appendChild(block);
+      });
+    }
+
+    /* ---------- Year/Week selectors ---------- */
+    function initYearWeekSelectors() {
+      const yearSelect = document.getElementById("yearSelect");
+      const weekSelect = document.getElementById("weekSelect");
+      const now = new Date();
+      const currentYear = now.getFullYear();
+
+      [currentYear - 1, currentYear, currentYear + 1].forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        if (y === currentYear) opt.selected = true;
+        yearSelect.appendChild(opt);
+      });
+
+      for (let w = 1; w <= 53; w++) {
+        const opt = document.createElement("option");
+        opt.value = w;
+        opt.textContent = w.toString().padStart(2, "0");
+        weekSelect.appendChild(opt);
+      }
+
+      weekSelect.value = getISOWeek(now);
+      updateWeekCodeDisplay();
+
+      yearSelect.addEventListener("change", updateWeekCodeDisplay);
+      weekSelect.addEventListener("change", updateWeekCodeDisplay);
+    }
+
+    function getYearWeekCode() {
+      const year = parseInt(document.getElementById("yearSelect").value, 10);
+      const week = parseInt(document.getElementById("weekSelect").value, 10);
+      if (!year || !week) return "";
+      const yy = (year % 100).toString().padStart(2,"0");
+      const ww = week.toString().padStart(2,"0");
+      return yy + ww;
+    }
+
+    function updateWeekCodeDisplay() {
+      document.getElementById("weekCodeDisplay").value = getYearWeekCode();
+    }
+
+    function setYearWeekFromCode(code) {
+      if (!/^\d{4}$/.test(code)) return;
+      const yy = parseInt(code.slice(0,2),10);
+      const ww = parseInt(code.slice(2,4),10);
+      const year = 2000 + yy;
+
+      const yearSelect = document.getElementById("yearSelect");
+      const weekSelect = document.getElementById("weekSelect");
+
+      if (![...yearSelect.options].some(o => parseInt(o.value,10) === year)) {
+        const opt = document.createElement("option");
+        opt.value = year;
+        opt.textContent = year;
+        yearSelect.appendChild(opt);
+      }
+      yearSelect.value = year;
+      weekSelect.value = ww;
+      updateWeekCodeDisplay();
+    }
+
+    function incrementWeekCode(code) {
+      if (!/^\d{4}$/.test(code)) return code;
+      let yy = parseInt(code.slice(0,2),10);
+      let ww = parseInt(code.slice(2,4),10);
+      ww += 1;
+      if (ww > 53) { ww = 1; yy += 1; if (yy > 99) yy = 0; }
+      return yy.toString().padStart(2,"0") + ww.toString().padStart(2,"0");
+    }
+
+    function getISOWeek(date) {
+      const tmp = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = tmp.getUTCDay() || 7;
+      tmp.setUTCDate(tmp.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+      return Math.ceil((((tmp - yearStart) / 86400000) + 1)/7);
+    }
+
+    /* ---------- Excel model ----------
+       Sheets:
+       - Meta
+       - Data: Member | Area | YYWW | YYWW | ...
+       - Workload: Member | YYWW | YYWW | ...
+       - Recognition: Member | YYWW | YYWW | ...
+    ------------------------------------------------------ */
+    const excelModel = {
+      team: "",
+      weeks: [],
+      members: new Set(),
+      ratings: new Map(),      // key: member||area||week => color
+      workload: new Map(),     // key: member||week => "1".."4"
+      recognition: new Map(),  // key: member||week => emoji
+      loaded: false
+    };
+
+    let lastImportedFilename = null;
+
+    function normalizeColor(v) {
+      const s = String(v || "").trim().toLowerCase();
+      if (["blue","green","yellow","red"].includes(s)) return s;
+      if (s === "blå" || s === "bla") return "blue";
+      if (s === "grön" || s === "gron") return "green";
+      if (s === "gul") return "yellow";
+      if (s === "röd" || s === "rod") return "red";
+      return "";
+    }
+
+    function normalizeRecognition(v) {
+      const s = String(v || "").trim();
+      const lower = s.toLowerCase();
+      if (s === "⭐" || lower === "star" || lower === "stjärna" || lower === "stjarna") return "⭐";
+      if (s === "🏅" || lower === "medal" || lower === "medalj") return "🏅";
+      if (s === "❤️" || s === "❤" || lower === "heart" || lower === "hjärta" || lower === "hjarta") return "❤️";
+      return "";
+    }
+
+    function ensureWeek(code) {
+      if (!/^\d{4}$/.test(code)) return;
+      if (!excelModel.weeks.includes(code)) {
+        excelModel.weeks.push(code);
+      }
+    }
+
+    function weekHasAnyData(weekCode) {
+      if (!/^\d{4}$/.test(weekCode)) return false;
+      for (const member of excelModel.members) {
+        for (const area of areas) {
+          const v = excelModel.ratings.get(`${member}||${area}||${weekCode}`) || "";
+          if (String(v).trim()) return true;
+        }
+        const wl = excelModel.workload.get(`${member}||${weekCode}`) || "";
+        if (String(wl).trim()) return true;
+        const rec = excelModel.recognition.get(`${member}||${weekCode}`) || "";
+        if (String(rec).trim()) return true;
+      }
+      return false;
+    }
+
+    function latestWeekWithData() {
+      const weeks = excelModel.weeks.slice().sort();
+      for (let i = weeks.length - 1; i >= 0; i--) {
+        if (weekHasAnyData(weeks[i])) return weeks[i];
+      }
+      return weeks[weeks.length - 1] || "";
+    }
+
+    function rebuildHistoryRows() {
+      const team = excelModel.team || document.getElementById("teamInput").value.trim() || "Team";
+      const out = [];
+      const mlist = Array.from(excelModel.members).sort();
+      const wlist = excelModel.weeks.slice().sort();
+
+      wlist.forEach(w => {
+        mlist.forEach(m => {
+          const row = {
+            Week: w,
+            Team: team,
+            Member: m,
+            Manageability: excelModel.ratings.get(`${m}||Manageability||${w}`) || "",
+            Comprehensibility: excelModel.ratings.get(`${m}||Comprehensibility||${w}`) || "",
+            Meaningfulness: excelModel.ratings.get(`${m}||Meaningfulness||${w}`) || "",
+            Recovery: excelModel.ratings.get(`${m}||Recovery||${w}`) || "",
+            Workload: excelModel.workload.get(`${m}||${w}`) || "",
+            Recognition: excelModel.recognition.get(`${m}||${w}`) || ""
+          };
+          const any = row.Manageability || row.Comprehensibility || row.Meaningfulness || row.Recovery || row.Workload || row.Recognition;
+          if (any) out.push(row);
+        });
+      });
+
+      historyRows = out;
+    }
+
+    /* ---------- Import ---------- */
+    function triggerGlobalImport() {
+      const toggle = document.getElementById("toggleMembers");
+      if (!toggle.checked) {
+        toggle.checked = true;
+        document.getElementById("membersSection").style.display = "block";
+      }
+      document.getElementById("globalMemberFileInput").click();
+    }
+
+    function handleGlobalImportFile(file) {
+      if (!file) return;
+      importExcelFile(file);
+      document.getElementById("globalMemberFileInput").value = "";
+    }
+
+    function importExcelFile(file) {
+      lastImportedFilename = file.name || null;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: "array" });
+
+        excelModel.team = "";
+        excelModel.weeks = [];
+        excelModel.members = new Set();
+        excelModel.ratings = new Map();
+        excelModel.workload = new Map();
+        excelModel.recognition = new Map();
+        excelModel.loaded = true;
+
+        const meta = wb.Sheets["Meta"];
+        if (meta) {
+          const metaAOA = XLSX.utils.sheet_to_json(meta, { header: 1, defval: "" });
+          if (metaAOA && metaAOA[0] && String(metaAOA[0][0]).toLowerCase().includes("team")) {
+            excelModel.team = String(metaAOA[0][1] || "").trim();
+          }
+        }
+        if (excelModel.team) document.getElementById("teamInput").value = excelModel.team;
+
+        const dataSheet = wb.Sheets["Data"] || wb.Sheets[wb.SheetNames[0]];
+        if (!dataSheet) {
+          alert("No sheet found.");
+          return;
+        }
+        const aoa = XLSX.utils.sheet_to_json(dataSheet, { header: 1, defval: "" });
+        if (!aoa.length || aoa.length < 2) {
+          alert("Data sheet is empty.");
+          return;
+        }
+
+        const header = aoa[0].map(x => String(x || "").trim());
+        const weekCols = [];
+        for (let c = 2; c < header.length; c++) {
+          if (/^\d{4}$/.test(header[c])) {
+            weekCols.push({ c, code: header[c] });
+            ensureWeek(header[c]);
+          }
+        }
+        if (!weekCols.length) {
+          alert("Data sheet must have week columns in YYWW format.");
+          return;
+        }
+
+        for (let r = 1; r < aoa.length; r++) {
+          const row = aoa[r] || [];
+          const member = String(row[0] || "").trim();
+          const area = String(row[1] || "").trim();
+          if (!member || !areas.includes(area)) continue;
+
+          excelModel.members.add(member);
+
+          weekCols.forEach(wc => {
+            const v = normalizeColor(row[wc.c]);
+            if (v) excelModel.ratings.set(`${member}||${area}||${wc.code}`, v);
+          });
+        }
+
+        const wsWL = wb.Sheets["Workload"];
+        if (wsWL) {
+          const wlAOA = XLSX.utils.sheet_to_json(wsWL, { header: 1, defval: "" });
+          if (wlAOA && wlAOA.length > 1) {
+            const wlHeader = wlAOA[0].map(x => String(x || "").trim());
+            const wlWeekCols = [];
+            for (let c = 1; c < wlHeader.length; c++) {
+              if (/^\d{4}$/.test(wlHeader[c])) {
+                wlWeekCols.push({ c, code: wlHeader[c] });
+                ensureWeek(wlHeader[c]);
+              }
+            }
+            for (let r = 1; r < wlAOA.length; r++) {
+              const row = wlAOA[r] || [];
+              const member = String(row[0] || "").trim();
+              if (!member) continue;
+              excelModel.members.add(member);
+              wlWeekCols.forEach(wc => {
+                const v = String(row[wc.c] || "").trim();
+                if (!v) return;
+                const num = parseInt(v,10);
+                if (num >= 1 && num <= 4) excelModel.workload.set(`${member}||${wc.code}`, String(num));
+              });
+            }
+          }
+        }
+
+        const wsRec = wb.Sheets["Recognition"];
+        if (wsRec) {
+          const recAOA = XLSX.utils.sheet_to_json(wsRec, { header: 1, defval: "" });
+          if (recAOA && recAOA.length > 1) {
+            const recHeader = recAOA[0].map(x => String(x || "").trim());
+            const recWeekCols = [];
+            for (let c = 1; c < recHeader.length; c++) {
+              if (/^\d{4}$/.test(recHeader[c])) {
+                recWeekCols.push({ c, code: recHeader[c] });
+                ensureWeek(recHeader[c]);
+              }
+            }
+            for (let r = 1; r < recAOA.length; r++) {
+              const row = recAOA[r] || [];
+              const member = String(row[0] || "").trim();
+              if (!member) continue;
+              excelModel.members.add(member);
+              recWeekCols.forEach(wc => {
+                const v = normalizeRecognition(row[wc.c]);
+                if (v) excelModel.recognition.set(`${member}||${wc.code}`, v);
+              });
+            }
+          }
+        }
+
+        rebuildHistoryRows();
+        showWeekPicker();
+
+        const team = excelModel.team || document.getElementById("teamInput").value.trim();
+        renderHistoryCirclesForTeam(team);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    /* Week picker modal */
+    function showWeekPicker() {
+      const sel = document.getElementById("importWeekSelect");
+      sel.innerHTML = "";
+      const weeks = excelModel.weeks.slice().sort();
+      weeks.forEach(w => {
+        const opt = document.createElement("option");
+        opt.value = w;
+        opt.textContent = w;
+        sel.appendChild(opt);
+      });
+
+      const def = latestWeekWithData();
+      if (def) sel.value = def;
+
+      document.getElementById("weekPickerBackdrop").style.display = "flex";
+    }
+
+    function closeWeekPicker() {
+      document.getElementById("weekPickerBackdrop").style.display = "none";
+    }
+
+    function confirmWeekImport() {
+      const week = document.getElementById("importWeekSelect").value;
+      closeWeekPicker();
+      loadWeekIntoUI(week);
+    }
+
+    function loadWeekIntoUI(weekCode) {
+      if (!/^\d{4}$/.test(weekCode)) return;
+
+      setYearWeekFromCode(weekCode);
+
+      const toggle = document.getElementById("toggleMembers");
+      if (!toggle.checked) {
+        toggle.checked = true;
+        document.getElementById("membersSection").style.display = "block";
+      }
+
+      members.length = 0;
+      const mlist = Array.from(excelModel.members).sort();
+      mlist.forEach(name => {
+        const obj = {
+          name,
+          ratings: {
+            Manageability: excelModel.ratings.get(`${name}||Manageability||${weekCode}`) || "",
+            Comprehensibility: excelModel.ratings.get(`${name}||Comprehensibility||${weekCode}`) || "",
+            Meaningfulness: excelModel.ratings.get(`${name}||Meaningfulness||${weekCode}`) || "",
+            Recovery: excelModel.ratings.get(`${name}||Recovery||${weekCode}`) || ""
+          },
+          workload: null,
+          recognition: excelModel.recognition.get(`${name}||${weekCode}`) || ""
+        };
+        const wl = excelModel.workload.get(`${name}||${weekCode}`);
+        obj.workload = wl ? parseInt(wl,10) : null;
+        members.push(obj);
+      });
+
+      renderMembersTable();
+      recalcFromMembers();
+
+      rebuildHistoryRows();
+      renderMembersTable();
+
+      const team = excelModel.team || document.getElementById("teamInput").value.trim();
+      renderHistoryCirclesForTeam(team);
+    }
+
+    /* ---------- Export (Save As) ---------- */
+    const STYLE_HEADER = {
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+      fill: { fgColor: { rgb: "12213B" } },
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin", color: { rgb: "CCCCCC" } },
+        bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+        left: { style: "thin", color: { rgb: "CCCCCC" } },
+        right: { style: "thin", color: { rgb: "CCCCCC" } }
+      }
+    };
+
+    function styleForColorValue(v) {
+      const s = String(v||"").trim().toLowerCase();
+      const base = {
+        border: {
+          top: { style: "thin", color: { rgb: "DDDDDD" } },
+          bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+          left: { style: "thin", color: { rgb: "DDDDDD" } },
+          right: { style: "thin", color: { rgb: "DDDDDD" } }
+        },
+        alignment: { horizontal: "center", vertical: "center" }
+      };
+      if (!s) return base;
+      if (s === "blue")   return { ...base, fill: { fgColor: { rgb: "2B6CB0" } }, font: { color: { rgb: "FFFFFF" }, bold: true } };
+      if (s === "green")  return { ...base, fill: { fgColor: { rgb: "38A169" } }, font: { color: { rgb: "FFFFFF" }, bold: true } };
+      if (s === "yellow") return { ...base, fill: { fgColor: { rgb: "ECC94B" } }, font: { color: { rgb: "000000" }, bold: true } };
+      if (s === "red")    return { ...base, fill: { fgColor: { rgb: "E53E3E" } }, font: { color: { rgb: "FFFFFF" }, bold: true } };
+      return base;
+    }
+
+    function styleForWorkload(v) {
+      const s = String(v||"").trim();
+      const base = { alignment: { horizontal: "center", vertical: "center" } };
+      if (!s) return base;
+      return { ...base, font: { bold: true } };
+    }
+
+    function styleForRecognition(v) {
+      const s = String(v||"").trim();
+      const base = { alignment: { horizontal: "center", vertical: "center" } };
+      if (!s) return base;
+      return { ...base, font: { bold: true, sz: 14 } };
+    }
+
+    function buildNextNWeeks(startCode, n = 3) {
+      const weeks = [];
+      let c = startCode;
+      for (let i = 0; i < n; i++) {
+        c = incrementWeekCode(c);
+        if (/^\d{4}$/.test(c)) weeks.push(c);
+      }
+      return weeks;
+    }
+
+    function safeSuggestedName(team) {
+      const safeTeam = (team || "team").replace(/[\\\/:*?"<>|]+/g, "_").replace(/\s+/g, "_");
+      return safeTeam + "_workbalance.xlsx";
+    }
+
+    function triggerDownloadFallback(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function exportToExcelSaveAs() {
+      // Ensure team is available; if imported, use it
+      let team = document.getElementById("teamInput").value.trim();
+      if (!team && excelModel.team) {
+        team = excelModel.team;
+        document.getElementById("teamInput").value = team;
+      }
+      if (!team) {
+        alert("Please enter a team name (or import a file that contains it) before exporting.");
+        return;
+      }
+
+      const weekCode = getYearWeekCode();
+      if (!/^\d{4}$/.test(weekCode)) {
+        alert("Please select a valid year and week so that a YYWW code can be created.");
+        return;
+      }
+
+      if (!excelModel.loaded) {
+        excelModel.loaded = true;
+        excelModel.team = team;
+      }
+      excelModel.team = team;
+
+      // Keep existing weeks + ensure current + next 3 weeks
+      ensureWeek(weekCode);
+      buildNextNWeeks(weekCode, 3).forEach(ensureWeek);
+
+      // Update model with current UI values for selected week (allows updating an existing week)
+      members.forEach(m => {
+        excelModel.members.add(m.name);
+        areas.forEach(a => {
+          const v = String(m.ratings[a] || "").trim().toLowerCase();
+          const key = `${m.name}||${a}||${weekCode}`;
+          if (v) excelModel.ratings.set(key, v);
+          else excelModel.ratings.delete(key);
+        });
+        const wKey = `${m.name}||${weekCode}`;
+        if (typeof m.workload === "number" && m.workload >= 1 && m.workload <= 4) {
+          excelModel.workload.set(wKey, String(m.workload));
+        } else {
+          excelModel.workload.delete(wKey);
+        }
+        const rKey = `${m.name}||${weekCode}`;
+        const recognition = normalizeRecognition(m.recognition || "");
+        if (recognition) excelModel.recognition.set(rKey, recognition);
+        else excelModel.recognition.delete(rKey);
+      });
+
+      rebuildHistoryRows();
+      renderMembersTable();
+      renderHistoryCirclesForTeam(team);
+
+      // IMPORTANT: newest weeks on the LEFT
+      const weeks = excelModel.weeks.slice().sort((a,b) => b.localeCompare(a));
+      const mlist = Array.from(excelModel.members).sort();
+
+      const wb = XLSX.utils.book_new();
+
+      // Meta
+      const metaAOA = [
+        ["Team", team],
+        ["LastExportWeek", weekCode],
+        ["Note", "Type only: blue, green, yellow, red (or empty). Cells are colored at export time based on the text value."]
+      ];
+      const wsMeta = XLSX.utils.aoa_to_sheet(metaAOA);
+      wsMeta["!cols"] = [{ wch: 18 }, { wch: 60 }];
+      XLSX.utils.book_append_sheet(wb, wsMeta, "Meta");
+
+      // Data
+      const dataAOA = [["Member","Area", ...weeks]];
+      mlist.forEach(member => {
+        areas.forEach(area => {
+          const row = [member, area];
+          weeks.forEach(w => row.push(excelModel.ratings.get(`${member}||${area}||${w}`) || ""));
+          dataAOA.push(row);
+        });
+      });
+      const wsData = XLSX.utils.aoa_to_sheet(dataAOA);
+
+      // Freeze: column A+B + header row
+      wsData["!freeze"] = { xSplit: 2, ySplit: 1, topLeftCell: "C2", activePane: "bottomRight", state: "frozen" };
+
+      // Style header + cells
+      const rangeData = XLSX.utils.decode_range(wsData["!ref"]);
+      for (let c = rangeData.s.c; c <= rangeData.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c });
+        if (wsData[addr]) wsData[addr].s = STYLE_HEADER;
+      }
+      for (let r = 1; r <= rangeData.e.r; r++) {
+        const a0 = XLSX.utils.encode_cell({ r, c: 0 });
+        const a1 = XLSX.utils.encode_cell({ r, c: 1 });
+        if (wsData[a0]) wsData[a0].s = { font: { bold: true }, alignment: { vertical: "center" } };
+        if (wsData[a1]) wsData[a1].s = { font: { bold: true }, alignment: { vertical: "center" } };
+
+        for (let c = 2; c <= rangeData.e.c; c++) {
+          const addr = XLSX.utils.encode_cell({ r, c });
+          if (!wsData[addr]) continue;
+          wsData[addr].s = styleForColorValue(wsData[addr].v);
+        }
+      }
+
+      wsData["!cols"] = [
+        { wch: 22 }, // Member
+        { wch: 20 }, // Area
+        ...weeks.map(() => ({ wch: 8 }))
+      ];
+      XLSX.utils.book_append_sheet(wb, wsData, "Data");
+
+      // Workload
+      const wlAOA = [["Member", ...weeks]];
+      mlist.forEach(member => {
+        const row = [member];
+        weeks.forEach(w => row.push(excelModel.workload.get(`${member}||${w}`) || ""));
+        wlAOA.push(row);
+      });
+      const wsWL = XLSX.utils.aoa_to_sheet(wlAOA);
+
+      // Freeze: column A + header row
+      wsWL["!freeze"] = { xSplit: 1, ySplit: 1, topLeftCell: "B2", activePane: "bottomRight", state: "frozen" };
+
+      const rangeWL = XLSX.utils.decode_range(wsWL["!ref"]);
+      for (let c = rangeWL.s.c; c <= rangeWL.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c });
+        if (wsWL[addr]) wsWL[addr].s = STYLE_HEADER;
+      }
+      for (let r = 1; r <= rangeWL.e.r; r++) {
+        const a0 = XLSX.utils.encode_cell({ r, c: 0 });
+        if (wsWL[a0]) wsWL[a0].s = { font: { bold: true }, alignment: { vertical: "center" } };
+        for (let c = 1; c <= rangeWL.e.c; c++) {
+          const addr = XLSX.utils.encode_cell({ r, c });
+          if (!wsWL[addr]) continue;
+          wsWL[addr].s = styleForWorkload(wsWL[addr].v);
+        }
+      }
+      wsWL["!cols"] = [{ wch: 22 }, ...weeks.map(() => ({ wch: 8 }))];
+      XLSX.utils.book_append_sheet(wb, wsWL, "Workload");
+
+      // Recognition
+      const recAOA = [["Member", ...weeks]];
+      mlist.forEach(member => {
+        const row = [member];
+        weeks.forEach(w => row.push(excelModel.recognition.get(`${member}||${w}`) || ""));
+        recAOA.push(row);
+      });
+      const wsRec = XLSX.utils.aoa_to_sheet(recAOA);
+
+      // Freeze: column A + header row
+      wsRec["!freeze"] = { xSplit: 1, ySplit: 1, topLeftCell: "B2", activePane: "bottomRight", state: "frozen" };
+
+      const rangeRec = XLSX.utils.decode_range(wsRec["!ref"]);
+      for (let c = rangeRec.s.c; c <= rangeRec.e.c; c++) {
+        const addr = XLSX.utils.encode_cell({ r: 0, c });
+        if (wsRec[addr]) wsRec[addr].s = STYLE_HEADER;
+      }
+      for (let r = 1; r <= rangeRec.e.r; r++) {
+        const a0 = XLSX.utils.encode_cell({ r, c: 0 });
+        if (wsRec[a0]) wsRec[a0].s = { font: { bold: true }, alignment: { vertical: "center" } };
+        for (let c = 1; c <= rangeRec.e.c; c++) {
+          const addr = XLSX.utils.encode_cell({ r, c });
+          if (!wsRec[addr]) continue;
+          wsRec[addr].s = styleForRecognition(wsRec[addr].v);
+        }
+      }
+      wsRec["!cols"] = [{ wch: 22 }, ...weeks.map(() => ({ wch: 8 }))];
+      XLSX.utils.book_append_sheet(wb, wsRec, "Recognition");
+
+      // Summary
+      let wSum = 0, wCount = 0;
+      members.forEach(m => {
+        if (typeof m.workload === "number" && m.workload >= 1 && m.workload <= 4) { wSum += m.workload; wCount++; }
+      });
+      const workloadAvg = wCount ? (wSum / wCount) : null;
+
+      const summaryAOA = [
+        ["Workbalance – TRATON"],
+        [],
+        ["Team", team],
+        ["Week (YYWW)", weekCode],
+        [],
+        ["Area","Blue","Green","Yellow","Red"]
+      ];
+      areas.forEach(a => {
+        const d = areaData[a];
+        summaryAOA.push([a, d.blue, d.green, d.yellow, d.red]);
+      });
+      summaryAOA.push(["Total", overall.blue, overall.green, overall.yellow, overall.red]);
+      summaryAOA.push([]);
+      summaryAOA.push(["Average perceived workload (1–4)", workloadAvg != null ? workloadAvg.toFixed(2) : "n/a"]);
+      const wsSummary = XLSX.utils.aoa_to_sheet(summaryAOA);
+      wsSummary["!cols"] = [{ wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
+      XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+      // CircleSnapshot
+      const snapAOA = [["Area","Snapshot (icons)"]];
+      areas.forEach(a => snapAOA.push([a, snapshotString(areaData[a])]));
+      snapAOA.push(["Total", snapshotString(overall)]);
+      snapAOA.push([]);
+      snapAOA.push(["Average perceived workload (1–4)", workloadAvg != null ? workloadAvg.toFixed(2) : "n/a"]);
+      snapAOA.push([]);
+      snapAOA.push(["Note", "This sheet stores a text snapshot of the circle."]);
+      const wsSnap = XLSX.utils.aoa_to_sheet(snapAOA);
+      wsSnap["!cols"] = [{ wch: 24 }, { wch: 70 }];
+      XLSX.utils.book_append_sheet(wb, wsSnap, "CircleSnapshot");
+
+      // Suggested filename
+      let suggestedName = lastImportedFilename || safeSuggestedName(team);
+
+      const arrayBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([arrayBuffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      });
+
+      // Try true Save As dialog (Edge/Chrome)
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName,
+            types: [{
+              description: "Excel Workbook",
+              accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"] }
+            }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          alert("Saved (Save As).");
+          return;
+        } catch (err) {
+          // cancelled or blocked -> fallback download
+          alert("Save As was cancelled or blocked. A normal download will be used instead.");
+          triggerDownloadFallback(blob, suggestedName);
+          return;
+        }
+      }
+
+      // Fallback
+      triggerDownloadFallback(blob, suggestedName);
+      alert("Downloaded. (Your browser may append (1) if a file with the same name already exists.)");
+    }
+
+    /* ---------- INIT ---------- */
+    window.addEventListener("DOMContentLoaded", () => {
+      initAreas();
+      initYearWeekSelectors();
+    });
+  </script>
+</body>
+</html>
+
